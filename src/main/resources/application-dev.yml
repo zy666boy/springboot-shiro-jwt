@@ -1,0 +1,30 @@
+#开发环境配置
+
+#配置服务器端口号
+server:
+  port: 8098
+
+#数据源配置
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/crm?serverTimezone=UTC&characterEncoding=UTF-8
+    username: root
+    password: Aa1203948162
+
+#mybatis相关配置
+mybatis:
+  mapper-locations: classpath:mapper/*Mapper.xml
+  config-location: classpath:mybatis-config.xml
+  type-aliases-package: com.example.springbootshirojwt.model
+
+#日志相关配置
+#对mybatis日志的配置
+logging:
+  level:
+    com:
+      example:
+        springbootshirojwt:
+          mapper: debug
+
+

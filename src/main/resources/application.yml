@@ -1,0 +1,16 @@
+#说明：本配置不使用application.properties文件 而使用更加简洁的application.yml文件。
+#(k: v:表示一对键值对（空格必须有）；以空格的缩进来控制层级关系；只要是左对齐的一列数据，都是同一个层级的)
+#将resource文件夹下原有的application.properties文件删除，创建application.yml配置文件（备注：其实SpringBoot底层会把application.yml文件解析为application.properties）
+
+#主配置文件
+#多环境切换(在项目中配置多套环境的配置方法:
+#因为现在一个项目有好多环境，开发环境，测试环境，准生产环境，生产环境，每个环境的参数不同，
+#所以我们就可以把每个环境的参数配置到yml文件中，这样在想用哪个环境的时候只需要在主配置文件中将用的配置文件写上就行。
+#在Spring Boot中多环境配置文件名需要满足application-{profile}.yml的格式，其中{profile}对应你的环境标识。
+#application-dev.yml：开发环境
+#application-test.yml：测试环境
+#application-prod.yml：生产环境
+#至于哪个具体的配置文件会被加载，需要在application.yml文件中通过spring.profiles.active属性来设置，其值对应{profile}值。
+spring:
+  profiles:
+    active: dev
