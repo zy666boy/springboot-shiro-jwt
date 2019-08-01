@@ -8,6 +8,6 @@ import lombok.Data;
 @TableName("test_test")
 public class TestTest {
     @TableId
-    private Integer test_id;
+    private Integer test_id;//test
     private String testName;
 }
