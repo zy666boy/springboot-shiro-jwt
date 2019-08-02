@@ -7,6 +7,7 @@ import com.example.springbootshirojwt.service.SysRoleMenuService;
 import com.example.springbootshirojwt.service.SysRoleService;
 import com.example.springbootshirojwt.util.R;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,7 @@ public class SysRoleController {
     @Autowired
     private SysRoleMenuService sysRoleMenuService;
     @RequiresAuthentication
+    @RequiresPermissions("role_view")
     @RequestMapping("/pageRole")
     public R pageRole(Page page){
         return new R(sysRoleService.page(page));
@@ -29,6 +31,7 @@ public class SysRoleController {
      * @return
      */
     @RequiresAuthentication
+    @RequiresPermissions("role_view")
     @RequestMapping("/getRoleAll")
     public R getRoleAll(){
         return new R(sysRoleService.list());
@@ -40,6 +43,7 @@ public class SysRoleController {
      * @return
      */
     @RequiresAuthentication
+    @RequiresPermissions("role_add")
     @PostMapping
     public R saveOne(SysRole sysRole){
         sysRole.setCreateTime(LocalDateTime.now());
@@ -53,6 +57,7 @@ public class SysRoleController {
      * @return
      */
     @RequiresAuthentication
+    @RequiresPermissions("role_update")
     @PutMapping
     public R putOne(SysRole sysRole){
         sysRole.setUpdateTime(LocalDateTime.now());
@@ -67,6 +72,7 @@ public class SysRoleController {
      * @return
      */
     @RequiresAuthentication
+    @RequiresPermissions("role_del")
     @DeleteMapping("/{id}")
     public R deleteOne(@PathVariable("id") String id){
         if(sysRoleService.removeById(id))
@@ -82,6 +88,7 @@ public class SysRoleController {
      * @return
      */
     @PutMapping("/putRoleMenuByRoleId")
+    @RequiresPermissions("role_update")
     @RequiresAuthentication
     public R putRoleMenuByRoleId(Integer id,String menuIds){
         sysRoleMenuService.putRoleMenuByRoleId(id,menuIds);

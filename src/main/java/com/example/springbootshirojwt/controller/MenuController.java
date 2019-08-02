@@ -16,6 +16,7 @@ import com.example.springbootshirojwt.util.TreeUtil;
 import com.example.springbootshirojwt.vo.MenuVO;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +39,7 @@ public class MenuController {
      * @return
      */
     @RequiresAuthentication
+    @RequiresPermissions("menu_view")
     @GetMapping("/getMenu")
     public R getMenu(){
         //用Set避免不同角色相同菜单造成的重复
@@ -60,6 +62,7 @@ public class MenuController {
      * @return
      */
     @RequiresAuthentication
+    @RequiresPermissions("menu_view")
     @GetMapping("/getMenuByRoleId/{id}")
     public R getMenuIdByRoleId(@PathVariable("id") Integer id){
         return new R(sysMenuService.getMenuByRoleId(id).stream().map(SysMenu::getId));
@@ -70,6 +73,7 @@ public class MenuController {
      * @return
      */
     @RequiresAuthentication
+    @RequiresPermissions("menu_view")
     @GetMapping("/getMenuAll")
     public R getMenuAll(){
         return new R(TreeUtil.bulidTree(sysMenuService.list(Wrappers.emptyWrapper()), -1));
@@ -80,6 +84,7 @@ public class MenuController {
      * @return
      */
     @RequiresAuthentication
+    @RequiresPermissions("menu_view")
     @GetMapping("/{id}")
     public R getMenuById(@PathVariable("id") Integer id){
         QueryWrapper queryWrapper=new QueryWrapper();
@@ -93,6 +98,7 @@ public class MenuController {
      * @return
      */
     @RequiresAuthentication
+    @RequiresPermissions("menu_add")
     @PostMapping
     public R saveOne(SysMenu sysMenu){
         sysMenu.setDelFlag("0");
@@ -109,6 +115,7 @@ public class MenuController {
      * @return
      */
     @RequiresAuthentication
+    @RequiresPermissions("menu_del")
     @DeleteMapping("/{id}")
     public R deleteOne(@PathVariable("id") Integer id){
         if(sysMenuService.removeById(id))
@@ -122,6 +129,7 @@ public class MenuController {
      * @return
      */
     @RequiresAuthentication
+    @RequiresPermissions("menu_update")
     @PutMapping
     public R putOne(SysMenu sysMenu){
         if(sysMenuService.updateById(sysMenu))
@@ -133,6 +141,7 @@ public class MenuController {
      * @return
      */
     @RequiresAuthentication
+    @RequiresPermissions("menu_view")
     @GetMapping("/getPermissionAll")
     public R getPermissionAll(){
         List<Permission> permissions=new ArrayList<>();

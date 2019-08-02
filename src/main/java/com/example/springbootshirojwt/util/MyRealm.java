@@ -18,6 +18,7 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -77,7 +78,7 @@ public class MyRealm extends AuthorizingRealm {
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
         String username = JWTUtil.getUsername(principals.toString());
         SysUser user = userService.getUserByUsername(username);
-        Set<Permission> permissions=null;
+        Set<Permission> permissions=new HashSet<>();
         List<SysRole> roles=roleService.getRolesByUid(user.getUid());
         for(SysRole role:roles){
             simpleAuthorizationInfo.addRole(role.getRole());

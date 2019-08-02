@@ -37,7 +37,7 @@ public class MenuVO implements Serializable {
 	public MenuVO(){
 
 	}
-	public MenuVO(SysMenu sysMenu){
+	public  MenuVO(SysMenu sysMenu){
 		this.id=sysMenu.getId();
 		this.name=sysMenu.getName();
 		this.type=sysMenu.getType();

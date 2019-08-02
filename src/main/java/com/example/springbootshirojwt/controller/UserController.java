@@ -13,6 +13,7 @@ import com.example.springbootshirojwt.util.JWTUtil;
 import com.example.springbootshirojwt.util.R;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +42,7 @@ public class UserController {
      * @return
      */
     @RequiresAuthentication
+    @RequiresPermissions("user_view")
     @GetMapping("/getUserInfo")
     public R getUserInfo(){
         Subject subject = SecurityUtils.getSubject();
@@ -69,6 +71,7 @@ public class UserController {
      * @return
      */
     @RequiresAuthentication
+    @RequiresPermissions("user_view")
     @GetMapping("/getUserInfoAll")
     public R getUserInfoAll(Page page,SysUser user){
         return new R(sysUserService.getUserInfoAll(page,user));
@@ -80,6 +83,7 @@ public class UserController {
      * @return
      */
     @RequiresAuthentication
+    @RequiresPermissions("user_add")
     @PostMapping
     public R saveOne(SysUser sysUser){
         sysUser.setDelFlag("0");
@@ -100,6 +104,7 @@ public class UserController {
      * @return
      */
     @RequiresAuthentication
+    @RequiresPermissions("user_update")
     @PutMapping
     public R putOne(SysUser sysUser){
         sysUser.setUpdateTime(LocalDateTime.now());
@@ -122,6 +127,7 @@ public class UserController {
      * @return
      */
     @RequiresAuthentication
+    @RequiresPermissions("user_del")
     @DeleteMapping("/{id}")
     public R deleteOne(@PathVariable("id") String id){
         if(sysUserService.removeById(id))
@@ -129,11 +135,13 @@ public class UserController {
         else return new R(200,"删除失败","");
     }
     @RequiresAuthentication
+    @RequiresPermissions("user_view")
     @GetMapping("/getAllUser")
     public R getAllUser(){
         return new R(sysUserService.list());
     }
     @RequiresAuthentication
+    @RequiresPermissions("user_update")
     @PutMapping("/putUserRole")
     @Transactional
     public R updateUserRole(String uid,String roleIds){
