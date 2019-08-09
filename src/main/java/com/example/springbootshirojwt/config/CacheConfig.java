@@ -84,6 +84,7 @@ public class CacheConfig extends CachingConfigurerSupport {
         builder.initialCacheNames(cacheNames);
         //设置缓存过期时间(也可以通过RedisUtil指定某个key的缓存过期时间)
         //defaultCacheConfig()返回的对象能设置许多缓存规则，Duration里有许多过期时间单位
+        //不过这好像并没有起作用
         builder.cacheDefaults(RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(5)));
         RedisCacheManager cacheManager=builder.build();
         return cacheManager;
