@@ -16,21 +16,34 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
+/**
+ * Spring Boot整合shiro后导致@Cacheable、@Transactional等注解失效的问题(在realm里自动注入的service的实例,
+ * 会导致在容器中的整个serviceBean内部的@Cacheable、@Transactional等注解等注解失效，以至于若是在其他地方自动注入此service bean,
+ * 内部的注解同样无效)
+ * 解决：
+ * 在realm自动注入service的地方，加上@Lazy注解,延迟自动注入。(@Lazy有两种用法一种是在@Component,@Bean等注解上使用，
+ * 使此bean延迟加载进入spring容器，正常情况是spring容器启动时，就加载此bean,用了之后是当此bean在第一次调用的时候才会被加载进spring容器，
+ * 作用主要是减少springIOC容器启动的加载时间。另一种就是用在自动注入注解上，使该bean被延迟注入)
+ */
 @Component
 public class MyRealm extends AuthorizingRealm {
 
     private static final Logger LOGGER = LogManager.getLogger(MyRealm.class);
     @Autowired
+    @Lazy
     private SysUserService userService;
     @Autowired
+    @Lazy
     private SysRoleService roleService;
     @Autowired
+    @Lazy
     private SysMenuService menuService;
     /**
      * 重写 Realm 的 supports() 方法是通过 JWT 进行登录判断的关键
@@ -45,8 +58,9 @@ public class MyRealm extends AuthorizingRealm {
      * 判断用户是否已登录认证，若是并给予认证许可(认证的有效期为本次访问某接口的过程内，
      * 不像之前单独的shiro那样，认证一次只要不登出，在不超过过期时常内都一直有效,所以每访问一次需要认证的接口都需要需要重复认证),抛出的错误会被全局异常处理统一处理。
      */
+    @Cacheable(value="authenticationInfo",key = "#jwtToken.credentials")//jwtToken.credentials调用的是getCredentials(),返回的是tokenString,见自定义类JWTToken
     @Override
-    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken jwtToken) throws AuthenticationException{
+    public AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken jwtToken) throws AuthenticationException{
         System.out.println("MyRealm.doGetAuthenticationInfo()");
         String tokenString = (String) jwtToken.getCredentials();
         // 解码获得username
@@ -73,7 +87,7 @@ public class MyRealm extends AuthorizingRealm {
      * 只有当需要检测用户权限的时候才会调用此方法
      */
     @Override
-    protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
+    public AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         System.out.println("MyRealm.doGetAuthorizationInfo()");
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
         String username = JWTUtil.getUsername(principals.toString());

@@ -8,9 +8,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication
 @EnableTransactionManagement
 public class SpringbootShiroJwtApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(SpringbootShiroJwtApplication.class, args);
     }
-
 }

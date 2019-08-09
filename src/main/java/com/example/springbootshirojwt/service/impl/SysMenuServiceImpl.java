@@ -11,6 +11,7 @@ import com.example.springbootshirojwt.service.SysMenuService;
 import com.example.springbootshirojwt.util.TreeUtil;
 import com.example.springbootshirojwt.vo.MenuVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -28,6 +29,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      * @param roleId
      * @return
      */
+    @Cacheable(value="MenuInfo",keyGenerator = "keyGenerator")
     public List<Permission> getPermisssionByRoleId(Integer roleId){
         return sysMenuMapper.getPermisssionByRoleId(roleId);
     }
@@ -36,6 +38,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      * @param id
      * @return
      */
+    @Cacheable(value="MenuInfo",keyGenerator = "keyGenerator")
     public List<SysMenu> getMenuByRoleId(Integer id){
        //sysMenuMapper.getMenuByRoleId(id).stream().map(MenuTree::new).sorted(Comparator.comparingInt(MenuTree::getSort)).collect(Collectors.toList());
         return sysMenuMapper.getMenuByRoleId(id);

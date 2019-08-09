@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import org.springframework.stereotype.Component;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
@@ -13,6 +14,7 @@ import java.util.Date;
  * 在这个工具类中可以实现对用户名和密码的加密处理，校验 token 是否正确，获取用户名等操作
  * 使用用户自己的密码充当加密密钥
  */
+@Component
 public class JWTUtil {
     // 过期时间5分钟
     private static final long EXPIRE_TIME =60*60*1000;

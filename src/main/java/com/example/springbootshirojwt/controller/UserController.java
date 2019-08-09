@@ -16,6 +16,7 @@ import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -106,7 +107,9 @@ public class UserController {
     @RequiresAuthentication
     @RequiresPermissions("user_update")
     @PutMapping
+    @CacheEvict(value="UserInfo",key="'com.example.springbootshirojwt.service.impl.SysUserServiceImpl:getUserByUsername:'+#sysUser.username")
     public R putOne(SysUser sysUser){
+        if(sysUser.getPassword().equals(""))sysUser.setPassword(null);
         sysUser.setUpdateTime(LocalDateTime.now());
         String oldUsername=sysUserService.getById(sysUser.getUid()).getUsername();
         String password=sysUser.getPassword();
@@ -144,6 +147,7 @@ public class UserController {
     @RequiresPermissions("user_update")
     @PutMapping("/putUserRole")
     @Transactional
+    @CacheEvict(value="UserInfo",key="'com.example.springbootshirojwt.service.impl.SysRoleServiceImpl:getRolesByUid:'+#uid")
     public R updateUserRole(String uid,String roleIds){
         QueryWrapper<SysUserRole> wrapper=new QueryWrapper<>();
         wrapper.eq("uid",uid);

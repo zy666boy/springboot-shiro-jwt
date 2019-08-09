@@ -1,7 +1,10 @@
 package com.example.springbootshirojwt.util;
+
+import java.io.Serializable;
+
 //前后分离项目中用于统一后端返回数据的类，必不可少
 //一般包含状态值和返回的具体内容
-public class R {
+public class R<T> implements Serializable {
 
     // http 状态码
     private int code;
@@ -10,19 +13,19 @@ public class R {
     private String msg;
 
     // 返回的数据
-    private Object data;
+    private T data;
 
-    public R(int code, String msg, Object data) {
+    public R(int code, String msg, T data) {
         this.code = code;
         this.msg = msg;
         this.data = data;
     }
-    public R(Object data) {
+    public R(T data) {
         this.code = 200;
         this.msg = "";
         this.data = data;
     }
-    public R(Object data,String msg) {
+    public R(T data,String msg) {
         this.code = 200;
         this.msg = msg;
         this.data = data;
@@ -47,7 +50,7 @@ public class R {
         return data;
     }
 
-    public void setData(Object data) {
+    public void setData(T data) {
         this.data = data;
     }
 }

@@ -21,9 +21,12 @@ package com.example.springbootshirojwt.dto;
 import com.example.springbootshirojwt.vo.MenuVO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
+
 @Data
 @EqualsAndHashCode(callSuper = true)//默认为false
-public class MenuTree extends TreeNode {
+public class MenuTree extends TreeNode implements Serializable {
 	private String icon;
 	private String name;
 	private String type;

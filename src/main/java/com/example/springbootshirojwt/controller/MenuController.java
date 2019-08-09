@@ -19,6 +19,7 @@ import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -106,7 +107,8 @@ public class MenuController {
         return new R(200,"添加成功","");
         else return new R(200,"添加失败","");//如果数据库操作出现错误，抛出的异常会被统一处理，但是在有些情况比如更新和删除等时，给sql语句的条件
                                                                 //设一个不存在的情况，此时数据库不会抛出异常,但相关crud方法返回false，这就是这个eles存在的原因
-                                                                //不能光只靠统一异常处理来解决不合法的数据库操作
+                                                               //不能光只靠统一异常处理来解决不合法的数据库操作
+
     }
 
     /**
@@ -131,6 +133,7 @@ public class MenuController {
     @RequiresAuthentication
     @RequiresPermissions("menu_update")
     @PutMapping
+    @CacheEvict(value="MenuInfo",allEntries = true)
     public R putOne(SysMenu sysMenu){
         if(sysMenuService.updateById(sysMenu))
         return new R(200,"修改成功","");

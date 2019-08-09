@@ -8,20 +8,21 @@ import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSource
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
+import org.springframework.beans.factory.config.MethodInvokingFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.apache.shiro.mgt.SecurityManager;
-
 import javax.servlet.Filter;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 @Configuration
 public class ShiroConfig {
     @Bean
-    public SecurityManager securityManager(MyRealm realm){//这里将已有的MyRealm bean赋给形参,
+    public SecurityManager securityManager(MyRealm myRealm){
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-        securityManager.setRealm(realm);
+        securityManager.setRealm(myRealm);
         // 关闭自带session因为在前后分离项目中前端是无法获取到后端 Session 的，即无法实现用户登录状态的同步
         DefaultSessionStorageEvaluator evaluator = new DefaultSessionStorageEvaluator();
         evaluator.setSessionStorageEnabled(false);
@@ -30,6 +31,16 @@ public class ShiroConfig {
         securityManager.setSubjectDAO(subjectDAO);
         return securityManager;
     }
+   /* @Bean
+    public MyRealm realm(){
+        MyRealm myRealm=new MyRealm();
+        //myRealm.setCachingEnabled(true);
+        //启用身份验证缓存，即缓存AuthenticationInfo信息，默认false
+        //myRealm.setAuthenticationCachingEnabled(true);
+        //启用授权缓存，即缓存AuthorizationInfo信息，默认false
+        //myRealm.setAuthorizationCachingEnabled(true);
+        return myRealm;
+    }*/
     @Bean
     public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager) {
         ShiroFilterFactoryBean factoryBean = new ShiroFilterFactoryBean();

@@ -7,6 +7,7 @@ import com.example.springbootshirojwt.model.SysMenu;
 import com.example.springbootshirojwt.model.SysRole;
 import com.example.springbootshirojwt.service.SysRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
      * @param uId
      * @return
      */
+    @Cacheable(value="UserInfo",keyGenerator = "keyGenerator")
     public List<SysRole> getRolesByUid(String uId){
         return sysRoleMapper.getRolesByUid(uId);
     }

@@ -9,6 +9,7 @@ import com.example.springbootshirojwt.util.R;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -59,6 +60,7 @@ public class SysRoleController {
     @RequiresAuthentication
     @RequiresPermissions("role_update")
     @PutMapping
+    @CacheEvict(value="UserInfo",allEntries = true)
     public R putOne(SysRole sysRole){
         sysRole.setUpdateTime(LocalDateTime.now());
         if(sysRoleService.updateById(sysRole))

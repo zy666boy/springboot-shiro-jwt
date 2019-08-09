@@ -1,14 +1,19 @@
 package com.example.springbootshirojwt.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.springbootshirojwt.mapper.SysRoleMapper;
 import com.example.springbootshirojwt.mapper.SysRoleMenuMapper;
+import com.example.springbootshirojwt.model.SysRole;
 import com.example.springbootshirojwt.model.SysRoleMenu;
 import com.example.springbootshirojwt.service.SysRoleMenuService;
 import com.example.springbootshirojwt.util.R;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Wrapper;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +22,8 @@ import java.util.List;
 public class SysRoleMenuServiceImpl extends ServiceImpl<SysRoleMenuMapper, SysRoleMenu> implements SysRoleMenuService {
     @Autowired
     private SysRoleMenuMapper sysRoleMenuMapper;
+    @Autowired
+    private SysRoleMapper sysRoleMapper;
     /**
      * 根据角色id更新角色的菜单权限
      * @param id
@@ -24,8 +31,11 @@ public class SysRoleMenuServiceImpl extends ServiceImpl<SysRoleMenuMapper, SysRo
      * @return
      */
     @Transactional
+    @CacheEvict(value="MenuInfo",allEntries = true)
     public boolean putRoleMenuByRoleId(Integer id, String menuIds){
-        sysRoleMenuMapper.deleteById(id);
+        UpdateWrapper<SysRoleMenu> wrapper=new UpdateWrapper();
+        wrapper.eq("role_id",id);
+        sysRoleMenuMapper.delete(wrapper);
         if(menuIds==""||menuIds==null)return true;
         String[] mIds=menuIds.split(",");
         List<SysRoleMenu> sysRoleMenus=new ArrayList<>();
@@ -38,6 +48,10 @@ public class SysRoleMenuServiceImpl extends ServiceImpl<SysRoleMenuMapper, SysRo
             sysRoleMenus.add(sysRoleMenu);
         }
        this.saveBatch(sysRoleMenus);
+        SysRole sysRole=new SysRole();
+        sysRole.setId(id);
+        sysRole.setUpdateTime(LocalDateTime.now());
+        sysRoleMapper.updateById(sysRole);
         return true;
     }
 }
